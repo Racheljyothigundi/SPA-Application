@@ -1,13 +1,14 @@
+import { Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from './authenticate';
 
-
-// authorizeRole.ts
 export const authorizeRole = (requiredRole: string) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user || req.user.role !== requiredRole) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: `Forbidden: Action requires ${requiredRole} credentials.`
       });
+      return;
     }
     next();
   };

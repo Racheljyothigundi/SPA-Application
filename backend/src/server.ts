@@ -15,12 +15,23 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'AccessFlow_Secure_JWT_Secret_2026_Key!';
 
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:4200' }));
+app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
 app.use(express.json());
 app.use(delayMiddleware);
 
-const usersFilePath = path.join(__dirname, 'data', 'demoUsers.json');
-const recordsFilePath = path.join(__dirname, 'data', 'demoRecords.json');
+// Helper to locate JSON data files across dev and compiled dist environments
+const findDataFile = (filename: string): string => {
+  const distPath = path.join(__dirname, 'data', filename);
+  if (fs.existsSync(distPath)) return distPath;
+  const srcPath = path.join(__dirname, '..', 'src', 'data', filename);
+  if (fs.existsSync(srcPath)) return srcPath;
+  const cwdPath = path.join(process.cwd(), 'src', 'data', filename);
+  if (fs.existsSync(cwdPath)) return cwdPath;
+  return distPath;
+};
+
+const usersFilePath = findDataFile('demoUsers.json');
+const recordsFilePath = findDataFile('demoRecords.json');
 
 const getUsers = () => JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
 const saveUsers = (users: any[]) => fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
@@ -45,7 +56,7 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(401).json({ success: false, message: 'Invalid User ID or Password.' });
   }
 
-  // Server-side validation: ensure selected dropdown role matches database truth
+  // Server-side validation: ensure selected role matches database truth
   if (role && role !== user.role) {
     return res.status(403).json({ success: false, message: `Access Denied: Account '${userId}' does not have '${role}' privileges.` });
   }
@@ -128,5 +139,5 @@ app.delete('/api/admin/users/:id', authenticateToken, authorizeRole('Admin'), (r
 });
 
 app.listen(PORT, () => {
-  console.log(`[AccessFlow Backend] Running on http://localhost:${PORT}`);
+  console.log(`[AccessFlow Backend] Running on port ${PORT}`);
 });

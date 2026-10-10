@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: accessflow-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        value: AccessFlow_Secure_JWT_Secret_2026_Key!

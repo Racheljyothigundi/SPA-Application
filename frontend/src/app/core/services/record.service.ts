@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class RecordService {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = 'https://accessflow-backend-pi2a.onrender.com/api';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

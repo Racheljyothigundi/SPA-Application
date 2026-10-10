@@ -18,8 +18,25 @@ const PORT = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 655
   ? parsedPort
   : 10000;
 const JWT_SECRET = process.env.JWT_SECRET || 'AccessFlow_Secure_JWT_Secret_2026_Key!';
+const allowedClientOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map(origin => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
+app.use(cors({
+  origin: (origin, callback) => {
+    const isAccessFlowVercelDeployment = origin
+      ? /^https:\/\/accessflow-frontend(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(origin)
+      : false;
+
+    if (!origin || allowedClientOrigins.includes(origin) || isAccessFlowVercelDeployment) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  }
+}));
 app.use(express.json());
 app.use(delayMiddleware);
 

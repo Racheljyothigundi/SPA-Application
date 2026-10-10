@@ -1,128 +1,219 @@
-<div class="dashboard-layout">
-  <!-- Sidebar Navigation -->
-  <aside class="sidebar">
-    <div>
-      <div class="brand">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        AccessFlow
-      </div>
-      <nav>
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          Dashboard
-        </a>
-        <a *ngIf="authService.isAdmin()" routerLink="/dashboard/users" routerLinkActive="active">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          User Management
-        </a>
+<div class="app-container">
+  <!-- Top Navbar (Matching Screenshot Image 2 Header) -->
+  <header class="top-navbar">
+    <div class="nav-left">
+      <a routerLink="/dashboard" class="brand-logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span>AccessFlow</span>
+      </a>
+
+      <nav class="nav-links">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+        <a *ngIf="authService.isAdmin()" routerLink="/dashboard/users" routerLinkActive="active">User Management</a>
       </nav>
     </div>
 
-    <div class="sidebar-footer">
-      <div class="user-info">
-        Logged in as: <span class="user-name">{{ currentUser?.name || 'User' }}</span>
-        <br>
-        <span class="badge" [ngClass]="currentUser?.role === 'Admin' ? 'role-admin' : 'role-user'" style="margin-top: 4px;">
-          {{ currentUser?.role }}
-        </span>
+    <div class="nav-right">
+      <div class="global-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search records..." 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearchChange()"
+        >
       </div>
-      <button class="btn-logout" (click)="logout()">Sign Out</button>
+
+      <div class="user-profile-menu">
+        <div class="avatar">
+          {{ currentUser?.name ? currentUser?.name?.charAt(0) : 'U' }}
+        </div>
+        <div class="user-details">
+          <span class="name">{{ currentUser?.name }}</span>
+          <span class="role-title">{{ currentUser?.role }}</span>
+        </div>
+        <button class="btn btn-sm btn-outline" (click)="logout()" style="margin-left: 0.5rem;">Sign Out</button>
+      </div>
     </div>
-  </aside>
+  </header>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="header-bar">
-      <div>
-        <h1>Business Records Overview</h1>
-        <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px;">
-          Welcome back, {{ currentUser?.name }}! Viewing records authorized for your role.
-        </p>
+  <!-- Main Body Layout (Sidebar + Content) -->
+  <div class="main-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar-nav">
+      <div class="menu-group">
+        <div class="menu-title">Main Menu</div>
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a *ngIf="authService.isAdmin()" routerLink="/dashboard/users" routerLinkActive="active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Team & Users
+        </a>
       </div>
 
-      <div class="delay-controls">
-        <label for="delaySelect">Simulated Latency:</label>
-        <select id="delaySelect" [value]="selectedDelay" (change)="onDelayChange($event)">
+      <div class="latency-box">
+        <label for="delaySel">API Latency Simulator:</label>
+        <select id="delaySel" [value]="selectedDelay" (change)="onDelayChange($event)">
           <option [value]="0">0s (Instant)</option>
           <option [value]="1000">1s Delay</option>
           <option [value]="2000">2s Delay</option>
           <option [value]="4000">4s Delay</option>
         </select>
       </div>
-    </div>
+    </aside>
 
-    <!-- Metrics Cards -->
-    <div class="metrics-grid">
-      <div class="card metric-card">
-        <div class="metric-title">Total Accessible Records</div>
-        <div class="metric-value">{{ records.length }}</div>
+    <!-- Main Content Body -->
+    <main class="content-body">
+      <!-- Breadcrumb Bar -->
+      <div class="breadcrumb-bar">
+        <span>Home</span> &gt; <span class="current">Dashboard</span>
       </div>
-      <div class="card metric-card">
-        <div class="metric-title">Completed Tasks</div>
-        <div class="metric-value text-success">
-          {{ completedCount }}
+
+      <!-- Top Widgets Row (Matching Screenshot Image 2 Cards) -->
+      <div class="widgets-grid">
+        <!-- Widget 1: User Profile Summary -->
+        <div class="card widget-card user-card">
+          <div class="user-header">
+            <div class="user-avatar-lg">
+              {{ currentUser?.name ? currentUser?.name?.charAt(0) : 'U' }}
+            </div>
+            <div>
+              <h3 class="user-fullname">{{ currentUser?.name }}</h3>
+              <p class="user-meta">ID: {{ currentUser?.userId }} | {{ currentUser?.email }}</p>
+            </div>
+          </div>
+          <div class="card-footer-stats">
+            <div class="stat-item">
+              <span class="label">Role Access Level</span>
+              <span class="badge-status" [ngClass]="currentUser?.role === 'Admin' ? 'role-admin' : 'role-user'">
+                {{ currentUser?.role }}
+              </span>
+            </div>
+            <div class="stat-item">
+              <span class="label">Status</span>
+              <span class="badge-status status-approved">
+                <span class="dot"></span> Active
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Widget 2: Productivity Metric Card -->
+        <div class="card widget-card productivity-card">
+          <div class="widget-head">
+            <span class="title">Completion Rate</span>
+            <span class="trend">+14.2%</span>
+          </div>
+          <div class="metric-big">{{ productivityRate }}</div>
+          <p class="subtext">{{ approvedCount }} of {{ records.length }} tasks finalized</p>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width]="productivityRate"></div>
+          </div>
+        </div>
+
+        <!-- Widget 3: Status Breakdown -->
+        <div class="card widget-card status-card">
+          <span class="widget-title">Access Level Summary</span>
+          <div class="status-counts-grid">
+            <div class="count-box">
+              <span class="num text-success">{{ approvedCount }}</span>
+              <span class="lbl">Approved</span>
+            </div>
+            <div class="count-box">
+              <span class="num text-primary">{{ inProgressCount }}</span>
+              <span class="lbl">In Progress</span>
+            </div>
+            <div class="count-box">
+              <span class="num text-danger">{{ pendingCount }}</span>
+              <span class="lbl">Pending / Cancelled</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="card metric-card">
-        <div class="metric-title">In Progress</div>
-        <div class="metric-value text-primary">
-          {{ inProgressCount }}
+
+      <!-- Alert Message -->
+      <div *ngIf="errorMessage" class="alert alert-error" style="margin-top: 1rem;">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Async Loading Spinner -->
+      <div *ngIf="loading" class="loading-box">
+        <div class="spinner"></div>
+        <p>Fetching authorized records (Simulated Delay: {{ selectedDelay }}ms)...</p>
+      </div>
+
+      <!-- Main Table Section (Matching Image 2 Table) -->
+      <div *ngIf="!loading" class="table-card" style="margin-top: 1.5rem;">
+        <div class="table-header-bar">
+          <div>
+            <h3>Authorized Business Records</h3>
+            <p style="font-size: 0.8rem; color: #64748b;">
+              Displaying {{ filteredRecords.length }} records accessible for {{ currentUser?.role }} privileges
+            </p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Record ID</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Category</th>
+                <th>Title & Description</th>
+                <th>Owner ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of filteredRecords">
+                <td><strong>{{ item.id }}</strong></td>
+                <td>
+                  <span class="badge-status" [ngClass]="{
+                    'status-approved': item.status === 'Completed' || item.status === 'Approved',
+                    'status-inprogress': item.status === 'In Progress',
+                    'status-cancelled': item.status === 'Pending' || item.status === 'Cancelled'
+                  }">
+                    <span class="dot"></span>
+                    {{ item.status === 'Completed' ? 'Approved' : item.status }}
+                  </span>
+                </td>
+                <td>{{ item.createdDate }}</td>
+                <td>{{ item.category }}</td>
+                <td>
+                  <strong>{{ item.title }}</strong>
+                  <div style="font-size: 0.775rem; color: #64748b;">{{ item.description }}</div>
+                </td>
+                <td><code>{{ item.ownerId }}</code></td>
+              </tr>
+              <tr *ngIf="filteredRecords.length === 0">
+                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 2.5rem;">
+                  No records match your search or role permissions.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-
-    <!-- Error Alert -->
-    <div *ngIf="errorMessage" class="alert alert-error">
-      {{ errorMessage }}
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading-spinner">
-      <div class="spinner"></div>
-      <p>Loading records (Latency: {{ selectedDelay }}ms)...</p>
-    </div>
-
-    <!-- Records Table -->
-    <div *ngIf="!loading" class="card" style="margin-top: 1.5rem;">
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Owner ID</th>
-              <th>Created Date</th>
-              <th>Status</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of records">
-              <td><strong>{{ item.id }}</strong></td>
-              <td>{{ item.title }}</td>
-              <td>{{ item.category }}</td>
-              <td><code>{{ item.ownerId }}</code></td>
-              <td>{{ item.createdDate }}</td>
-              <td>
-                <span class="badge" [ngClass]="{
-                  'status-completed': item.status === 'Completed',
-                  'status-in-progress': item.status === 'In Progress',
-                  'status-pending': item.status === 'Pending'
-                }">
-                  {{ item.status }}
-                </span>
-              </td>
-              <td style="color: #64748b; font-size: 0.85rem;">{{ item.description }}</td>
-            </tr>
-            <tr *ngIf="records.length === 0">
-              <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">No records found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>

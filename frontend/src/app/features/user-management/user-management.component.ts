@@ -11,10 +11,12 @@ import { User } from '../../core/models/user.model';
 })
 export class UserManagementComponent implements OnInit {
   users: User[] = [];
+  filteredUsers: User[] = [];
   loading = false;
   errorMessage = '';
   successMessage = '';
   selectedDelay = 0;
+  searchTerm = '';
   
   userForm: FormGroup;
   showCreateModal = false;
@@ -38,6 +40,21 @@ export class UserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
+  onSearchChange(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.filteredUsers = [...this.users];
+      return;
+    }
+    this.filteredUsers = this.users.filter(u => 
+      u.name.toLowerCase().includes(term) ||
+      u.email.toLowerCase().includes(term) ||
+      u.userId.toLowerCase().includes(term) ||
+      u.role.toLowerCase().includes(term) ||
+      u.status.toLowerCase().includes(term)
+    );
+  }
+
   onDelayChange(event: any): void {
     this.authService.selectedDelay = parseInt(event.target.value, 10);
     this.selectedDelay = this.authService.selectedDelay;
@@ -49,7 +66,8 @@ export class UserManagementComponent implements OnInit {
     this.errorMessage = '';
     this.adminUserService.getUsers().subscribe({
       next: (res) => {
-        this.users = res.users;
+        this.users = res.users || [];
+        this.filteredUsers = [...this.users];
         this.loading = false;
       },
       error: (err) => {
@@ -92,6 +110,7 @@ export class UserManagementComponent implements OnInit {
     this.adminUserService.updateUserStatus(user.userId, newStatus).subscribe({
       next: () => {
         user.status = newStatus;
+        this.onSearchChange();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Failed to update user status.';
@@ -105,6 +124,7 @@ export class UserManagementComponent implements OnInit {
     this.adminUserService.deleteUser(userId).subscribe({
       next: () => {
         this.users = this.users.filter(u => u.userId !== userId);
+        this.onSearchChange();
         this.successMessage = 'User deleted successfully.';
       },
       error: (err) => {

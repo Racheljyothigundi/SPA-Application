@@ -1,62 +1,97 @@
-<div class="login-wrapper">
+<div class="login-page">
+  <div class="brand-header">
+    <h1>AccessFlow</h1>
+    <p class="subtitle">Role-Based Access & Management System</p>
+  </div>
+
   <div class="login-card">
-    <div class="brand-header">
-      <div class="icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      </div>
-      <h2>AccessFlow</h2>
-      <p>Enterprise Single-Page Application Access Portal</p>
+    <div class="card-title-group">
+      <h2>Welcome Back</h2>
+      <p>Sign in to access your dashboard</p>
     </div>
 
-    <div *ngIf="errorMessage" class="alert alert-error">
+    <div *ngIf="errorMessage" class="alert-error">
       {{ errorMessage }}
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="userId">User ID</label>
+      <div class="form-field">
+        <label>User ID / Email</label>
         <input 
-          id="userId" 
           type="text" 
           formControlName="userId" 
-          placeholder="Enter User ID (e.g. admin01, user01)"
+          placeholder="Enter your user ID or email"
         >
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-input">
+      <div class="form-field">
+        <label>Password</label>
+        <div class="password-wrapper">
           <input 
-            id="password" 
             [type]="showPassword ? 'text' : 'password'" 
             formControlName="password" 
-            placeholder="Enter Password"
+            placeholder="Enter password"
           >
-          <button type="button" class="btn-toggle" (click)="togglePassword()">
+          <button type="button" class="toggle-eye" (click)="togglePassword()">
             {{ showPassword ? 'Hide' : 'Show' }}
           </button>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="role">Role Privilege Level</label>
-        <select id="role" formControlName="role">
-          <option value="Admin">Admin (Full Access)</option>
-          <option value="General User">General User (Restricted Access)</option>
-        </select>
+      <div class="form-field">
+        <label>Select Role</label>
+        <div class="role-selector">
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="loginForm.value.role === 'General User'"
+            (click)="selectRole('General User')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>General User</span>
+          </button>
+
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="loginForm.value.role === 'Admin'"
+            (click)="selectRole('Admin')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Admin</span>
+          </button>
+        </div>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid || loading">
-        {{ loading ? 'Authenticating...' : 'Sign In' }}
+      <button type="submit" class="btn btn-submit" [disabled]="loginForm.invalid || loading">
+        {{ loading ? 'Signing in...' : 'Sign In' }}
       </button>
     </form>
 
-    <div class="login-footer">
-      <p>Demo Accounts:</p>
-      <code>Admin: admin01 / Admin@123 (Role: Admin)</code><br>
-      <code>User: user01 / User@123 (Role: General User)</code>
+    <div class="divider">
+      <span>OR QUICK DEMO ACCESS</span>
+    </div>
+
+    <div class="quick-access-grid">
+      <button type="button" class="quick-btn" (click)="quickLogin('Admin')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Admin Demo</span>
+      </button>
+
+      <button type="button" class="quick-btn" (click)="quickLogin('General User')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>User Demo</span>
+      </button>
     </div>
   </div>
 </div>

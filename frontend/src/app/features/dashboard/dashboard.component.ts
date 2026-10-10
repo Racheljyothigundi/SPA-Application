@@ -12,9 +12,11 @@ import { BusinessRecord, User } from '../../core/models/user.model';
 export class DashboardComponent implements OnInit {
   currentUser: User | null = null;
   records: BusinessRecord[] = [];
+  filteredRecords: BusinessRecord[] = [];
   loading = true;
   errorMessage = '';
   selectedDelay = 0;
+  searchTerm = '';
 
   constructor(
     public authService: AuthService,
@@ -27,12 +29,36 @@ export class DashboardComponent implements OnInit {
     this.loadDashboardData();
   }
 
-  get completedCount(): number {
-    return this.records.filter(r => r.status === 'Completed').length;
+  get approvedCount(): number {
+    return this.records.filter(r => r.status === 'Completed' || r.status === 'Approved').length;
   }
 
   get inProgressCount(): number {
     return this.records.filter(r => r.status === 'In Progress').length;
+  }
+
+  get pendingCount(): number {
+    return this.records.filter(r => r.status === 'Pending' || r.status === 'Cancelled').length;
+  }
+
+  get productivityRate(): string {
+    if (!this.records.length) return '0%';
+    const rate = (this.approvedCount / this.records.length) * 100;
+    return `${rate.toFixed(1)}%`;
+  }
+
+  onSearchChange(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.filteredRecords = [...this.records];
+      return;
+    }
+    this.filteredRecords = this.records.filter(r => 
+      r.title.toLowerCase().includes(term) ||
+      r.id.toLowerCase().includes(term) ||
+      r.category.toLowerCase().includes(term) ||
+      r.status.toLowerCase().includes(term)
+    );
   }
 
   onDelayChange(event: any): void {
@@ -50,11 +76,12 @@ export class DashboardComponent implements OnInit {
       records: this.recordService.getRecords()
     }).subscribe({
       next: (res) => {
-        this.records = res.records.records;
+        this.records = res.records.records || [];
+        this.filteredRecords = [...this.records];
         this.loading = false;
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to load dashboard records.';
+      error: () => {
+        this.errorMessage = 'Failed to load dashboard records from server.';
         this.loading = false;
       }
     });

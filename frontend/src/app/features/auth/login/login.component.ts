@@ -26,8 +26,29 @@ export class LoginComponent {
     });
   }
 
+  selectRole(role: string): void {
+    this.loginForm.patchValue({ role });
+  }
+
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  quickLogin(roleType: 'Admin' | 'General User'): void {
+    if (roleType === 'Admin') {
+      this.loginForm.setValue({
+        userId: 'admin01',
+        password: 'Admin@123',
+        role: 'Admin'
+      });
+    } else {
+      this.loginForm.setValue({
+        userId: 'user01',
+        password: 'User@123',
+        role: 'General User'
+      });
+    }
+    this.onSubmit();
   }
 
   onSubmit(): void {
@@ -42,7 +63,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || 'Authentication failed. Please check your credentials.';
+        this.errorMessage = err.error?.message || 'Authentication failed. Please check credentials.';
       }
     });
   }

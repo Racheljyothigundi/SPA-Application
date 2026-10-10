@@ -12,7 +12,11 @@ import { authorizeRole } from './middleware/authorizeRole';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const configuredPort = process.env.PORT;
+const parsedPort = configuredPort ? Number(configuredPort) : 10000;
+const PORT = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 65535
+  ? parsedPort
+  : 10000;
 const JWT_SECRET = process.env.JWT_SECRET || 'AccessFlow_Secure_JWT_Secret_2026_Key!';
 
 app.use(cors({ origin: process.env.CLIENT_URL || '*' }));
@@ -138,6 +142,6 @@ app.delete('/api/admin/users/:id', authenticateToken, authorizeRole('Admin'), (r
   res.json({ success: true, message: 'User deleted successfully.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`[AccessFlow Backend] Running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[AccessFlow Backend] Running on 0.0.0.0:${PORT}`);
 });

@@ -1,0 +1,69 @@
+$navy-dark: #0f172a;
+$navy-sidebar: #1e293b;
+$accent-blue: #4f46e5;
+$bg-light: #f8fafc;
+$text-main: #334155;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: $bg-light;
+  color: $text-main;
+}
+
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+
+  .sidebar {
+    width: 260px;
+    background-color: $navy-dark;
+    color: #ffffff;
+    padding: 1.5rem 1rem;
+    
+    .brand {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #818cf8;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: #94a3b8;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      
+      &:hover, &.active {
+        background-color: $navy-sidebar;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+  }
+}
+
+.badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.status-completed, &.status-active { background: #dcfce7; color: #15803d; }
+  &.status-in-progress { background: #e0e7ff; color: #4338ca; }
+  &.status-pending, &.status-inactive { background: #fef3c7; color: #b45309; }
+}

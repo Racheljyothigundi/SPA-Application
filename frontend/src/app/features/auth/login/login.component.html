@@ -1,0 +1,62 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="brand-header">
+      <div class="icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <h2>AccessFlow</h2>
+      <p>Enterprise Single-Page Application Access Portal</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="userId">User ID</label>
+        <input 
+          id="userId" 
+          type="text" 
+          formControlName="userId" 
+          placeholder="Enter User ID (e.g. admin01, user01)"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input">
+          <input 
+            id="password" 
+            [type]="showPassword ? 'text' : 'password'" 
+            formControlName="password" 
+            placeholder="Enter Password"
+          >
+          <button type="button" class="btn-toggle" (click)="togglePassword()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role Privilege Level</label>
+        <select id="role" formControlName="role">
+          <option value="Admin">Admin (Full Access)</option>
+          <option value="General User">General User (Restricted Access)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid || loading">
+        {{ loading ? 'Authenticating...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Demo Accounts:</p>
+      <code>Admin: admin01 / Admin@123 (Role: Admin)</code><br>
+      <code>User: user01 / User@123 (Role: General User)</code>
+    </div>
+  </div>
+</div>

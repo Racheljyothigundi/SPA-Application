@@ -1,0 +1,29 @@
+[
+  {
+    "id": "admin01",
+    "userId": "admin01",
+    "name": "Elena Rostova",
+    "email": "elena.admin@accessflow.io",
+    "role": "Admin",
+    "status": "Active",
+    "passwordHash": "$2a$10$89v8/A4Wc25H.d2yL4C55.Lq/O5U4E6fKzL6K0V6W8Y3/87E30a.G"
+  },
+  {
+    "id": "user01",
+    "userId": "user01",
+    "name": "Marcus Vance",
+    "email": "marcus.user@accessflow.io",
+    "role": "General User",
+    "status": "Active",
+    "passwordHash": "$2a$10$89v8/A4Wc25H.d2yL4C55.Lq/O5U4E6fKzL6K0V6W8Y3/87E30a.G"
+  },
+  {
+    "id": "user02",
+    "userId": "user02",
+    "name": "Aria Montgomery",
+    "email": "aria.m@accessflow.io",
+    "role": "General User",
+    "status": "Inactive",
+    "passwordHash": "$2a$10$89v8/A4Wc25H.d2yL4C55.Lq/O5U4E6fKzL6K0V6W8Y3/87E30a.G"
+  }
+]

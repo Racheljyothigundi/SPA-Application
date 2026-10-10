@@ -1,0 +1,128 @@
+<div class="dashboard-layout">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        AccessFlow
+      </div>
+      <nav>
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </a>
+        <a *ngIf="authService.isAdmin()" routerLink="/dashboard/users" routerLinkActive="active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          User Management
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        Logged in as: <span class="user-name">{{ currentUser?.name || 'User' }}</span>
+        <br>
+        <span class="badge" [ngClass]="currentUser?.role === 'Admin' ? 'role-admin' : 'role-user'" style="margin-top: 4px;">
+          {{ currentUser?.role }}
+        </span>
+      </div>
+      <button class="btn-logout" (click)="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="header-bar">
+      <div>
+        <h1>Business Records Overview</h1>
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px;">
+          Welcome back, {{ currentUser?.name }}! Viewing records authorized for your role.
+        </p>
+      </div>
+
+      <div class="delay-controls">
+        <label for="delaySelect">Simulated Latency:</label>
+        <select id="delaySelect" [value]="selectedDelay" (change)="onDelayChange($event)">
+          <option [value]="0">0s (Instant)</option>
+          <option [value]="1000">1s Delay</option>
+          <option [value]="2000">2s Delay</option>
+          <option [value]="4000">4s Delay</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="metrics-grid">
+      <div class="card metric-card">
+        <div class="metric-title">Total Accessible Records</div>
+        <div class="metric-value">{{ records.length }}</div>
+      </div>
+      <div class="card metric-card">
+        <div class="metric-title">Completed Tasks</div>
+        <div class="metric-value text-success">
+          {{ completedCount }}
+        </div>
+      </div>
+      <div class="card metric-card">
+        <div class="metric-title">In Progress</div>
+        <div class="metric-value text-primary">
+          {{ inProgressCount }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading records (Latency: {{ selectedDelay }}ms)...</p>
+    </div>
+
+    <!-- Records Table -->
+    <div *ngIf="!loading" class="card" style="margin-top: 1.5rem;">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Owner ID</th>
+              <th>Created Date</th>
+              <th>Status</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of records">
+              <td><strong>{{ item.id }}</strong></td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.category }}</td>
+              <td><code>{{ item.ownerId }}</code></td>
+              <td>{{ item.createdDate }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'status-completed': item.status === 'Completed',
+                  'status-in-progress': item.status === 'In Progress',
+                  'status-pending': item.status === 'Pending'
+                }">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td style="color: #64748b; font-size: 0.85rem;">{{ item.description }}</td>
+            </tr>
+            <tr *ngIf="records.length === 0">
+              <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">No records found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>

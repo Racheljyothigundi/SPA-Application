@@ -1,0 +1,12 @@
+[
+  { "id": "REC-101", "title": "Q3 Financial Audit", "ownerId": "admin01", "category": "Finance", "status": "Completed", "createdDate": "2026-09-15", "description": "Quarterly balance review." },
+  { "id": "REC-102", "title": "Frontend Security Review", "ownerId": "user01", "category": "Security", "status": "In Progress", "createdDate": "2026-09-20", "description": "Review OWASP top 10 compliance for Angular SPA." },
+  { "id": "REC-103", "title": "Cloud Infrastructure Migration", "ownerId": "admin01", "category": "DevOps", "status": "Pending", "createdDate": "2026-09-28", "description": "Assess AWS deployment options." },
+  { "id": "REC-104", "title": "User API Integration", "ownerId": "user01", "category": "Development", "status": "Completed", "createdDate": "2026-10-01", "description": "RESTful client layer implementation." },
+  { "id": "REC-105", "title": "UI Accessibility Audit", "ownerId": "user02", "category": "Design", "status": "In Progress", "createdDate": "2026-10-04", "description": "Evaluate WCAG 2.1 compliance." },
+  { "id": "REC-106", "title": "Database Schema Optimization", "ownerId": "admin01", "category": "Database", "status": "Completed", "createdDate": "2026-10-05", "description": "Index optimization for queries." },
+  { "id": "REC-107", "title": "Auth Middleware Refactoring", "ownerId": "user01", "category": "Security", "status": "In Progress", "createdDate": "2026-10-06", "description": "Verify JWT role authorization." },
+  { "id": "REC-108", "title": "Continuous Delivery Setup", "ownerId": "admin01", "category": "DevOps", "status": "Pending", "createdDate": "2026-10-07", "description": "Automated pipelines configuration." },
+  { "id": "REC-109", "title": "Client Onboarding Specs", "ownerId": "user02", "category": "Operations", "status": "Completed", "createdDate": "2026-10-08", "description": "Documentation for tenant onboarding." },
+  { "id": "REC-110", "title": "Error Handling Enhancements", "ownerId": "user01", "category": "Development", "status": "Completed", "createdDate": "2026-10-09", "description": "Standardized API error response format." }
+]
